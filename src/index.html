@@ -12,20 +12,22 @@
   </head>
   <body>
     <form class="search-form" id="search-form">
-      <input
-        type="text"
-        name="searchQuery"
-        autocomplete="off"
-        placeholder="Search images..."
-      />
-      <button type="submit">Search</button>
+      <div class="search-container">
+        <input
+          type="text"
+          name="searchQuery"
+          autocomplete="off"
+          placeholder="Search images..."
+        />
+        <button class="search-button" type="submit">Search</button>
+      </div>
     </form>
 
     <div class="gallery">
       <!-- Image cards will be inserted here -->
     </div>
 
-    <button type="button" class="load-more">Load more</button>
+    <!-- <button type="button" class="load-more">Load more</button> -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.3/axios.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
