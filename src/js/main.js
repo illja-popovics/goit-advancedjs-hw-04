@@ -16,6 +16,8 @@ let totalHits = 0;
 let lightbox;
 let observerActive = true;
 
+
+
 iziToast.settings({
   position: 'topRight',
 });
@@ -72,11 +74,11 @@ const renderImages = images => {
 const handleSearch = async event => {
   event.preventDefault();
   query = event.currentTarget.elements.searchQuery.value.trim();
+  observer.unobserve(sentinel);
 
   // Check if the query is empty or just spaces
   if (!query) {
     iziToast.warning({ title: 'Warning', message: 'Please enter a valid search query.' });
-    observerActive = false; // Disable observer for invalid query
     return;
   }
 
@@ -88,20 +90,20 @@ const handleSearch = async event => {
 
   if (data.hits.length === 0) {
     iziToast.warning({ title: 'No results', message: 'Sorry, there are no images matching your search query. Please try again.' });
-    observerActive = false; // Disable observer for no results
     return;
   }
 
   iziToast.success({ title: 'Hooray!', message: `We found ${totalHits} images.` });
   renderImages(data.hits);
-  observerActive = true; // Enable observer for valid query with results
+  observer.observe(sentinel); // Enable observer for valid query with results
 
   // Check if there are less than 40 images found
-  if (data.hits.length < 40) {
+  if (totalHits !== 0 && data.hits.length < 40) {
     iziToast.warning({ title: 'End of results', message: "We're sorry, but you've reached the end of search results." });
-    observerActive = false; // Disable observer as no more images to load
   }
 };
+
+form.addEventListener('submit', handleSearch);
 
 const loadMoreImages = async () => {
   if (query && page * 40 < totalHits) {
@@ -112,7 +114,7 @@ const loadMoreImages = async () => {
     // Check if there are no more images to load
     if (data.hits.length < 40 || page * 40 >= totalHits) {
       iziToast.warning({ title: 'End of results', message: "We're sorry, but you've reached the end of search results." });
-      observerActive = false; // Disable observer as no more images to load
+      observer.unobserve(sentinel); // Disable observer as no more images to load
     }
   }
 };
@@ -129,7 +131,7 @@ const observer = new IntersectionObserver(handleIntersection, {
   rootMargin: '200px',
 });
 
-form.addEventListener('submit', handleSearch);
+
 
 // Create a sentinel element
 const sentinel = document.createElement('div');
